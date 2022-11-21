@@ -2,6 +2,8 @@
 
 namespace system;
 
+use app\controllers\AppController;
+
 class Router
 {
     private static array $routes;
@@ -14,19 +16,20 @@ class Router
     /**
      * @return void
      */
-    public static function run()
+    public function run(): void
     {
         $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         $routes = self::$routes;
-        $runAction = [\app\controllers\AppController::class, 'notFound'];
 
-        foreach ($routes as $route => $action) {
-            if ($route == $uri) {
-                $runAction = $action;
-            }
+        if (isset($routes[$uri]) && !empty($routes[$uri])) {
+            $controllerAndAction = $routes[$uri];
+            $controllerName = $controllerAndAction[0];
+            $actionName = $controllerAndAction[1];
+
+            $controller = new $controllerName;
+            $controller->$actionName();
+        } else {
+            View::render('main/notFound');
         }
-
-        $controller = new $runAction[0];
-        $controller->{$runAction[1]}();
     }
 }

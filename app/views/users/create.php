@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link href="/assets/css/style.css" rel="stylesheet" type="text/css">
+    <link href="/css/style.css" rel="stylesheet" type="text/css">
     <title>User Info</title>
 </head>
 <body>
@@ -10,11 +10,11 @@
     <?php
         if (!empty($_POST)) {
             foreach ($_POST as $key => $value) {
-                echo $key . ': ' . $value . '<br>';
+                echo ucfirst($key) . ': ' . $value . '<br>';
             }
         }
+        echo $data;
     ?>
 </div>
-<div><?php echo $data; ?></div>
 </body>
 </html>

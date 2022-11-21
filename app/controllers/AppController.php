@@ -6,13 +6,8 @@ use system\View;
 
 class AppController
 {
-    public function index()
+    public function index(): void
     {
         View::render('main/index');
-    }
-
-    public function notFound()
-    {
-        View::render('main/notFound');
     }
 }

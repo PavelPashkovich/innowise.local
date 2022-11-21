@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link href="/assets/css/style.css" rel="stylesheet" type="text/css">
+    <link href="/css/style.css" rel="stylesheet" type="text/css">
     <title>Add User</title>
 </head>
 <body>
@@ -28,7 +28,7 @@
             </select>
         </label>
 
-        <button type="submit">Отправить</button>
+        <button type="submit">Add</button>
     </form>
 </div>
 </body>

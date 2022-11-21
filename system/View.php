@@ -8,9 +8,8 @@ class View
      * @param string $path
      * @param array $data
      * @return void
-     * @throws \ErrorException
      */
-    public static function render(string $path, array $data = [])
+    public static function render(string $path, array $data = []): void
     {
         $fullPath = __DIR__ . '/../app/views/' . $path . '.php';
 
@@ -20,12 +19,12 @@ class View
             }
         }
 
-        $messages = (require_once __DIR__ . '/../config/messages.php')['messages'];
+//        $messages = require_once __DIR__ . '/../config/messages.php';
 
         if (file_exists($fullPath) && is_file($fullPath)) {
             include($fullPath);
         } else {
-            throw new \ErrorException($messages['view can not be found']);
+            View::render('notFound');
         }
     }
 }
