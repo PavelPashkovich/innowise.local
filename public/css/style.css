@@ -15,14 +15,39 @@ body {
     height: 100vh;
 }
 
-form {
+.actions-container {
     display: flex;
-    flex-direction: column;
-    width: 300px;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+header {
+    display: flex;
+    justify-content: end;
     padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 2px grey;
-    background-color: #f3f3f3;
+}
+
+/*form {*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    width: 300px;*/
+/*    padding: 20px;*/
+/*    border-radius: 10px;*/
+/*    box-shadow: 0 0 2px grey;*/
+/*    background-color: #f3f3f3;*/
+/*}*/
+
+.welcome-text {
+    font-size: 80px;
+    text-shadow: gray 2px 2px 5px;
+}
+
+a {
+    text-decoration: none;
+}
+
+nav a {
+    margin-left: 15px;
 }
 
 input, select {
@@ -42,4 +67,13 @@ button {
     background-color: white;
     border: none;
     cursor: pointer;
+}
+
+table {
+    border-collapse: collapse;
+}
+th,
+td {
+    border: 1px solid #cecfd5;
+    padding: 10px 15px;
 }

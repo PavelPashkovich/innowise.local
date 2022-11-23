@@ -1,13 +1,10 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <link href="/css/style.css" rel="stylesheet">
-    <title>Main Page</title>
-</head>
-<body>
-    <div class="wrapper">
-        <h2>404 Page not found!</h2>
-    </div>
-</body>
-</html>
+<?php
+$page_title = "Page not found";
+require_once __DIR__ . '/../header_layout.php';
+?>
+
+<div class="wrapper">
+    <h2>404 Page not found!</h2>
+</div>
+
+<?php require_once __DIR__ . '/../footer_layout.php'; ?>
