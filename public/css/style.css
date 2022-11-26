@@ -27,15 +27,25 @@ header {
     padding: 20px;
 }
 
-/*form {*/
-/*    display: flex;*/
-/*    flex-direction: column;*/
-/*    width: 300px;*/
-/*    padding: 20px;*/
-/*    border-radius: 10px;*/
-/*    box-shadow: 0 0 2px grey;*/
-/*    background-color: #f3f3f3;*/
-/*}*/
+form {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 2px grey;
+    background-color: #f3f3f3;
+}
+
+p {
+    margin: 10px;
+}
+
+.error-message {
+    color: red;
+    margin: 0 0 10px 0;
+    font-size: 12px;
+}
 
 .welcome-text {
     font-size: 80px;
@@ -51,6 +61,7 @@ nav a {
 }
 
 input, select {
+    width: 100%;
     margin: 10px 0;
     padding: 10px;
     border: 1px solid white;

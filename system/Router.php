@@ -27,7 +27,7 @@ class Router
             $controller = new $this->controller;
             $action = $this->action;
             if (!empty($this->params)) {
-                $controller->$action($this->params);
+                $controller->$action($this->params[0]);
             } else {
                 if (!empty($_POST)) {
                     $controller->$action($_POST);

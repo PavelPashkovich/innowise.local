@@ -6,6 +6,7 @@ require_once __DIR__ . '/../header_nav.php';
 
 <div class="wrapper">
 
+    <?php if (count($users) > 0): ?>
     <table>
         <thead>
         <tr>
@@ -18,6 +19,7 @@ require_once __DIR__ . '/../header_nav.php';
         </tr>
         </thead>
         <tbody>
+
         <?php foreach ($users as $user): ?>
             <tr>
                 <td><?php echo $user['id']; ?></td>
@@ -30,18 +32,20 @@ require_once __DIR__ . '/../header_nav.php';
                         <form action="users/<?php echo $user['id']; ?>" method="get">
                             <button type="submit">Show</button>
                         </form>
-                        <form action="" method="get">
+                        <form action="users/edit/<?php echo $user['id']; ?>" method="get">
                             <button>Edit</button>
                         </form>
-                        <form action="" method="post">
-                            <button>Delete</button>
+                        <form onsubmit="delete_confirm(event)" action="users/<?php echo $user['id']; ?>" method="post">
+                            <button type="submit">Delete</button>
                         </form>
                     </div>
                 </td>
             </tr>
         <?php endforeach; ?>
         </tbody>
+    <?php else: ?>
+    <h2>There no users yet. You can add new user.</h2>
+    <?php endif; ?>
 </div>
-
 
 <?php require_once __DIR__ . '/../footer_layout.php'; ?>

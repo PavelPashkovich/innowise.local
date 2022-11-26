@@ -2,12 +2,10 @@
 
 namespace app\controllers;
 
-use system\View;
-
-class AppController
+class AppController extends Controller
 {
     public function index(): void
     {
-        View::render('main/index');
+        $this->render('/main/index');
     }
 }

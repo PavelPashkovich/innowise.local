@@ -47,7 +47,7 @@ return [
         'url' => 'users/([0-9]+)',
         'method' => 'POST',
         'controller' => \app\controllers\UserController::class,
-        'action' => 'delete'
+        'action' => 'destroy'
     ],
 ];
 

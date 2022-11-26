@@ -3,49 +3,60 @@
 namespace app\controllers;
 
 use app\models\User;
-use system\DataBase;
-use system\View;
+use app\requests\RequestUserStore;
 
-class UserController
+class UserController extends Controller
 {
     public function index(): void
     {
-        $tableName = User::getTableName();
-        $users = DataBase::all($tableName);
-        View::render('users/index', ['users' => $users]);
+        $users = (new User)->all();
+        $this->render('/users/index', ['users' => $users]);
     }
 
     public function create(): void
     {
-        View::render('users/create');
+        $this->render('/users/create');
     }
 
     public function store($data): void
     {
-        $user = new User($data);
-        $savedId = DataBase::insert($user, $data);
-        if ($savedId) {
-            header("Location: users/$savedId");
+        $errors = (new RequestUserStore())->validate($data);
+        if (!empty($errors)) {
+            $this->render('users/create', ['errors' => $errors]);
         } else {
-            View::render('main/notFound');
+            $savedId = (new User())->insert($data);
+            $this->redirect("/users/$savedId");
         }
-
-//        View::render('users/create', ['data' => 'Some data']);
     }
 
-    public function show($params): void
+    public function show($id): void
     {
-        $tableName = User::getTableName();
-        $id = $params[0];
-        $user = DataBase::find($tableName, $id);
-        View::render('users/show', ['user' => $user]);
+        $user = (new User())->find($id);
+        $this->render('/users/show', ['user' => $user]);
     }
 
-    //    public function getAllUsers()
-//    {
-//        $users = User::all();
-//        echo "<pre>";
-//        print_r($users);
-//        echo "</pre>";
-//    }
+    public function edit($id): void
+    {
+        $user = (new User())->find($id);
+        $this->render('/users/edit', ['user' => $user]);
+    }
+
+    public function update($data): void
+    {
+        $updatedId = (new User)->update($data);
+        $this->redirect("/users/$updatedId");
+    }
+
+    public function destroy($id): void
+    {
+        (new User())->delete($id);
+        $this->redirect("/users");
+    }
+
+
 }
+
+//echo "<pre>";
+//print_r($errors);
+//echo "</pre>";
+//die();

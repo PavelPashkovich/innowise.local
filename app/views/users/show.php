@@ -26,11 +26,11 @@ require_once __DIR__ . '/../header_nav.php';
                 <td><?php echo $user['status']; ?></td>
                 <td>
                     <div class="actions-container">
-                        <form action="">
+                        <form action="edit/<?php echo $user['id']; ?>" method="get">
                             <button>Edit</button>
                         </form>
-                        <form action="">
-                            <button>Delete</button>
+                        <form onsubmit="delete_confirm(event)" action="<?php echo $user['id']; ?>" method="post">
+                            <button type="submit">Delete</button>
                         </form>
                     </div>
                 </td>

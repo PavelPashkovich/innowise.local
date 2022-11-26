@@ -4,36 +4,17 @@ namespace system;
 
 use app\models\Model;
 use PDO;
+use PDOException;
 
 class DataBase
 {
-//    private static string $host;
-//    private static string $db_name;
-//    private static string $user_name;
-//    private static string $password;
-//    protected static array $fillable = [];
-//    protected static string $tableName;
     protected static ?PDO $connection = null;
-//
-//    public function __construct()
-//    {
-//        $database = require_once __DIR__ . '/../config/database.php';
-//        self::$host = $database['host'];
-//        self::$db_name = $database['db_name'];
-//        self::$user_name = $database['user_name'];
-//        self::$password = $database['password'];
-//    }
 
     public static function getConnection(): ?PDO
     {
         if (!self::$connection) {
-            $database = require_once __DIR__ . '/../config/database.php';
-            $host = $database['host'];
-            $db_name = $database['db_name'];
-            $user_name = $database['user_name'];
-            $password = $database['password'];
             try {
-                self::$connection = new PDO("mysql:host=" . $host . ";dbname=" . $db_name, $user_name, $password);
+                self::$connection = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASS);
             } catch (\PDOException $exception) {
                 echo "Connection error: " . $exception->getMessage();
             }
@@ -41,31 +22,35 @@ class DataBase
         return self::$connection;
     }
 
-    public static function all($tableName)
+    public static function all(Model $model)
     {
         if (self::getConnection() !== null) {
             $connection = self::getConnection();
+            $tableName = $model->getTableName();
             $sql = "SELECT * FROM " . $tableName;
             $result = $connection->query($sql);
             return $result->fetchAll(PDO::FETCH_ASSOC);
         }
     }
 
-    public static function find($tableName, $id)
+    public static function find(Model $model, $id)
     {
-        if (self::getConnection() !== null) {
+        try {
             $connection = self::getConnection();
+            $tableName = $model->getTableName();
             $sql = "SELECT * FROM " . $tableName . " WHERE id = " . $id;
             $result = $connection->query($sql);
             return $result->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            echo "Database error: " . $e->getMessage();
         }
     }
 
     public static function insert(Model $model, $data)
     {
-        if (self::getConnection() !== null) {
+        try {
             $connection = self::getConnection();
-            $tableName = $model::getTableName();
+            $tableName = $model->getTableName();
             $columns = implode(', ', array_keys($data));
             $values = "'" . implode("' , '", array_values($data)) . "'";
 
@@ -75,7 +60,52 @@ class DataBase
             $id = $connection->lastInsertId();
 
             return $id;
+        } catch (PDOException $e) {
+            echo "Database error: " . $e->getMessage();
         }
     }
+
+    public static function update(Model $model, $data)
+    {
+        try {
+            $connection = self::getConnection();
+            $tableName = $model->getTableName();
+
+            $values = [];
+            foreach ($data as $key => $value) {
+                if ($key == 'id') {
+                    continue;
+                }
+                $values[] = $key . ' = ' . '"' . $value .'"';
+            }
+            $values = implode(', ', $values);
+
+            $sql = "UPDATE $tableName SET $values WHERE id = {$data['id']}";
+            $connection->query($sql);
+            return $data['id'];
+        } catch (PDOException $e) {
+            echo "Database error: " . $e->getMessage();
+        }
+    }
+
+    public static function delete(Model $model, $id)
+    {
+        try {
+            $connection = self::getConnection();
+            $tableName = $model->getTableName();
+            $sql = "DELETE FROM $tableName WHERE id = :id";
+            $stmt = $connection->prepare($sql);
+            $stmt->bindValue(":id", $id);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            echo "Database error: " . $e->getMessage();
+        }
+    }
+
+//        echo "<pre>";
+//        print_r($res);
+//        echo "</pre>";
+//        die();
+//        }
 
 }
