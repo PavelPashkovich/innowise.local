@@ -2,6 +2,8 @@
 
 namespace app\models;
 
+use system\DataBase;
+
 class User extends Model
 {
     protected static string $tableName = 'users';
@@ -17,6 +19,21 @@ class User extends Model
         $this->email = $data['email'] ?? '';
         $this->gender = $data['gender'] ?? '';
         $this->status = $data['status'] ?? '';
+    }
+
+    public function checkEmailExistence($email)
+    {
+        $tableName = $this->getTableName();
+        $sql = "SELECT COUNT(*) FROM " . $tableName . " WHERE email = '$email'";
+        $response = DataBase::executeSqlQuery($sql);
+        $result = [];
+        if (isset($response['success'])) {
+            $res = $response['success'];
+            $result['success'] = $res->fetchColumn();
+        } elseif (isset($response['error'])) {
+            $result['error'] = $response['error'];
+        }
+        return $result;
     }
 
 }

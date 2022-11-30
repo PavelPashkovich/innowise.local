@@ -5,8 +5,10 @@ require_once __DIR__ . '/../header_nav.php';
 ?>
 
 <div class="wrapper">
-
-    <?php if (count($users) > 0): ?>
+    <?php if (isset($error)): ?>
+    <h3><?php echo $error; ?></h3>
+    <?php else: ?>
+    <?php if (isset($users) && count($users) > 0): ?>
     <table>
         <thead>
         <tr>
@@ -45,6 +47,7 @@ require_once __DIR__ . '/../header_nav.php';
         </tbody>
     <?php else: ?>
     <h2>There no users yet. You can add new user.</h2>
+    <?php endif; ?>
     <?php endif; ?>
 </div>
 

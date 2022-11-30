@@ -27,7 +27,7 @@ header {
     padding: 20px;
 }
 
-form {
+.form-container {
     display: flex;
     flex-direction: column;
     width: 300px;
@@ -43,7 +43,7 @@ p {
 
 .error-message {
     color: red;
-    margin: 0 0 10px 0;
+    margin: 10px 0 10px 0;
     font-size: 12px;
 }
 

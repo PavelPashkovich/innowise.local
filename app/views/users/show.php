@@ -6,6 +6,10 @@ require_once __DIR__ . '/../header_nav.php';
 
 <div class="wrapper">
 
+    <?php if (isset($error)): ?>
+        <h3><?php echo $error; ?></h3>
+    <?php else: ?>
+    <?php if (isset($user)): ?>
     <table>
         <thead>
         <tr>
@@ -36,6 +40,9 @@ require_once __DIR__ . '/../header_nav.php';
                 </td>
             </tr>
         </tbody>
+    </table>
+    <?php endif; ?>
+    <?php endif; ?>
 </div>
 
 
