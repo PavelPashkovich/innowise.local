@@ -1,19 +1,11 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-    content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" type="text/css" href="/css/style.css">
-    <title>Main Page</title>
-</head>
-<body>
-<div class="wrapper">
-    <form action="users/new">
-        <button type="submit">Add new user</button>
-    </form>
-</div>
-</body>
-</html>
+<?php
+$page_title = "Main page";
+require_once __DIR__ . '/../header_layout.php';
+require_once __DIR__ . '/../header_nav.php';
+?>
 
+<div class="wrapper">
+    <h1 class="welcome-text">Welcome!</h1>
+</div>
+
+<?php require_once __DIR__ . '/../footer_layout.php'; ?>

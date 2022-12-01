@@ -15,7 +15,19 @@ body {
     height: 100vh;
 }
 
-form {
+.actions-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+header {
+    display: flex;
+    justify-content: end;
+    padding: 20px;
+}
+
+.form-container {
     display: flex;
     flex-direction: column;
     width: 300px;
@@ -25,7 +37,31 @@ form {
     background-color: #f3f3f3;
 }
 
+p {
+    margin: 10px;
+}
+
+.error-message {
+    color: red;
+    margin: 10px 0 10px 0;
+    font-size: 12px;
+}
+
+.welcome-text {
+    font-size: 80px;
+    text-shadow: gray 2px 2px 5px;
+}
+
+a {
+    text-decoration: none;
+}
+
+nav a {
+    margin-left: 15px;
+}
+
 input, select {
+    width: 100%;
     margin: 10px 0;
     padding: 10px;
     border: 1px solid white;
@@ -42,4 +78,13 @@ button {
     background-color: white;
     border: none;
     cursor: pointer;
+}
+
+table {
+    border-collapse: collapse;
+}
+th,
+td {
+    border: 1px solid #cecfd5;
+    padding: 10px 15px;
 }

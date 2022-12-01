@@ -19,8 +19,6 @@ class View
             }
         }
 
-//        $messages = require_once __DIR__ . '/../config/messages.php';
-
         if (file_exists($fullPath) && is_file($fullPath)) {
             include($fullPath);
         } else {
