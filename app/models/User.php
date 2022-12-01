@@ -21,7 +21,11 @@ class User extends Model
         $this->status = $data['status'] ?? '';
     }
 
-    public function checkEmailExistence($email)
+    /**
+     * @param $email
+     * @return array
+     */
+    public function checkEmailExistence($email): array
     {
         $tableName = $this->getTableName();
         $sql = "SELECT COUNT(*) FROM " . $tableName . " WHERE email = '$email'";

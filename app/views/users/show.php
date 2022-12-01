@@ -9,7 +9,7 @@ require_once __DIR__ . '/../header_nav.php';
     <?php if (isset($error)): ?>
         <h3><?php echo $error; ?></h3>
     <?php else: ?>
-    <?php if (isset($user)): ?>
+    <?php if (isset($users)): ?>
     <table>
         <thead>
         <tr>
@@ -23,17 +23,17 @@ require_once __DIR__ . '/../header_nav.php';
         </thead>
         <tbody>
             <tr>
-                <td><?php echo $user['id']; ?></td>
-                <td><?php echo $user['name']; ?></td>
-                <td><?php echo $user['email']; ?></td>
-                <td><?php echo $user['gender']; ?></td>
-                <td><?php echo $user['status']; ?></td>
+                <td><?php echo $users['id']; ?></td>
+                <td><?php echo $users['name']; ?></td>
+                <td><?php echo $users['email']; ?></td>
+                <td><?php echo $users['gender']; ?></td>
+                <td><?php echo $users['status']; ?></td>
                 <td>
                     <div class="actions-container">
-                        <form action="edit/<?php echo $user['id']; ?>" method="get">
+                        <form action="edit/<?php echo $users['id']; ?>" method="get">
                             <button>Edit</button>
                         </form>
-                        <form onsubmit="delete_confirm(event)" action="<?php echo $user['id']; ?>" method="post">
+                        <form onsubmit="delete_confirm(event)" action="<?php echo $users['id']; ?>" method="post">
                             <button type="submit">Delete</button>
                         </form>
                     </div>

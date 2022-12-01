@@ -3,7 +3,6 @@
 namespace app\requests;
 
 use app\models\User;
-use system\DataBase;
 use system\Validation;
 
 class UserStoreRequest implements Validation
@@ -45,12 +44,6 @@ class UserStoreRequest implements Validation
         } elseif (isset($response['error'])) {
             $errors['database_error'] = $response['error'];
         }
-
-//        $user = new User();
-//        $emailExists = DataBase::checkEmailExistence($user, $email);
-//        if ($emailExists) {
-//            $errors['email_error'] = "Email $email already exists!";
-//        }
 
         return $errors;
     }

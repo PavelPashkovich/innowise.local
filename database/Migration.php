@@ -2,13 +2,14 @@
 
 namespace database;
 
-//require_once __DIR__ . '/../system/DataBase.php';
-
 use system\DataBase;
 
 class Migration
 {
-    public static function migrate()
+    /**
+     * @return void
+     */
+    public static function migrate(): void
     {
         try {
             $connection = DataBase::getConnection();

@@ -161,10 +161,4 @@ class DataBase
         return $response;
     }
 
-//        echo "<pre>";
-//        print_r($res);
-//        echo "</pre>";
-//        die();
-//        }
-
 }

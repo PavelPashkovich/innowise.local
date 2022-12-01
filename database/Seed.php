@@ -6,7 +6,10 @@ use system\DataBase;
 
 class Seed
 {
-    public static function seed()
+    /**
+     * @return void
+     */
+    public static function seed(): void
     {
         try {
             $connection = DataBase::getConnection();
