@@ -1,90 +1,90 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+/** {*/
+/*    margin: 0;*/
+/*    padding: 0;*/
+/*    box-sizing: border-box;*/
+/*}*/
 
-body {
-    font-family: "Ubuntu Mono", sans-serif;
-}
+/*body {*/
+/*    font-family: "Ubuntu Mono", sans-serif;*/
+/*}*/
 
-.wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-}
+/*.wrapper {*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    justify-content: center;*/
+/*    height: 100vh;*/
+/*}*/
 
-.actions-container {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-}
+/*.actions-container {*/
+/*    display: flex;*/
+/*    flex-direction: row;*/
+/*    justify-content: space-evenly;*/
+/*}*/
 
-header {
-    display: flex;
-    justify-content: end;
-    padding: 20px;
-}
+/*header {*/
+/*    display: flex;*/
+/*    justify-content: end;*/
+/*    padding: 20px;*/
+/*}*/
 
-.form-container {
-    display: flex;
-    flex-direction: column;
-    width: 300px;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 2px grey;
-    background-color: #f3f3f3;
-}
+/*.form-container {*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    width: 300px;*/
+/*    padding: 20px;*/
+/*    border-radius: 10px;*/
+/*    box-shadow: 0 0 2px grey;*/
+/*    background-color: #f3f3f3;*/
+/*}*/
 
-p {
-    margin: 10px;
-}
+/*p {*/
+/*    margin: 10px;*/
+/*}*/
 
-.error-message {
-    color: red;
-    margin: 10px 0 10px 0;
-    font-size: 12px;
-}
+/*.error-message {*/
+/*    color: red;*/
+/*    !*margin: 10px 0 10px 0;*!*/
+/*    !*font-size: 12px;*!*/
+/*}*/
 
-.welcome-text {
-    font-size: 80px;
-    text-shadow: gray 2px 2px 5px;
-}
+/*.welcome-text {*/
+/*    font-size: 80px;*/
+/*    text-shadow: gray 2px 2px 5px;*/
+/*}*/
 
-a {
-    text-decoration: none;
-}
+/*a {*/
+/*    text-decoration: none;*/
+/*}*/
 
-nav a {
-    margin-left: 15px;
-}
+/*nav a {*/
+/*    margin-left: 15px;*/
+/*}*/
 
-input, select {
-    width: 100%;
-    margin: 10px 0;
-    padding: 10px;
-    border: 1px solid white;
-    border-radius: 10px;
-    box-shadow: inset 0 0 2px grey;
-    outline: none;
-}
+/*input, select {*/
+/*    width: 100%;*/
+/*    margin: 10px 0;*/
+/*    padding: 10px;*/
+/*    border: 1px solid white;*/
+/*    border-radius: 10px;*/
+/*    box-shadow: inset 0 0 2px grey;*/
+/*    outline: none;*/
+/*}*/
 
-button {
-    font-family: "Ubuntu Mono", sans-serif;
-    font-size: 16px;
-    border-radius: 10px;
-    padding: 10px;
-    background-color: white;
-    border: none;
-    cursor: pointer;
-}
+/*button {*/
+/*    font-family: "Ubuntu Mono", sans-serif;*/
+/*    font-size: 16px;*/
+/*    border-radius: 10px;*/
+/*    padding: 10px;*/
+/*    background-color: white;*/
+/*    border: none;*/
+/*    cursor: pointer;*/
+/*}*/
 
-table {
-    border-collapse: collapse;
-}
-th,
-td {
-    border: 1px solid #cecfd5;
-    padding: 10px 15px;
-}
+/*table {*/
+/*    border-collapse: collapse;*/
+/*}*/
+/*th,*/
+/*td {*/
+/*    border: 1px solid #cecfd5;*/
+/*    padding: 10px 15px;*/
+/*}*/
