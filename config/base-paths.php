@@ -14,6 +14,12 @@ return [
         'action' => 'index'
     ],
     [
+        'url' => 'users/page/([0-9]+)',
+        'method' => 'GET',
+        'controller' => \app\controllers\UserController::class,
+        'action' => 'index'
+    ],
+    [
         'url' => 'users/create',
         'method' => 'GET',
         'controller' => \app\controllers\UserController::class,

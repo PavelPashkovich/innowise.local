@@ -8,6 +8,7 @@ abstract class Model
 {
     protected static string $tableName;
     protected static array $columns;
+    protected static int $limit_per_page = 10;
 
     public function getTableName(): string
     {
@@ -19,9 +20,16 @@ abstract class Model
         return static::$columns;
     }
 
-    public function all()
+    public function setLimitPerPage($limit_per_page): object
     {
-        return DataBase::all($this);
+        static::$limit_per_page = $limit_per_page;
+        return $this;
+    }
+
+    public function all($params)
+    {
+        $params['limit_per_page'] = static::$limit_per_page;
+        return DataBase::all($this, $params);
     }
 
     public  function find($id)
