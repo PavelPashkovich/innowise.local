@@ -8,12 +8,14 @@ use app\requests\UserStoreRequest;
 class UserController extends Controller
 {
     /**
+     * @param array $params
      * @return void
      */
-    public function index(): void
+    public function index(array $params = []): void
     {
-        $response = (new User)->all();
+        $response = (new User)->setLimitPerPage(10)->all($params);
         $data = $this->prepareUserResponse($response);
+
         $this->render('/users/index', $data);
     }
 
@@ -50,6 +52,7 @@ class UserController extends Controller
     public function show($id): void
     {
         $response = (new User())->find($id);
+//        $this->printRes($response);
         $data = $this->prepareUserResponse($response);
         $this->render('/users/show', $data);
     }
@@ -111,11 +114,21 @@ class UserController extends Controller
         $data = [];
         if (isset($response['success'])) {
             $data = ['users' => $response['success']];
+            $data['total_pages'] = $response['total_pages'] ?? '';
+            $data['page'] = $response['page'] ?? '';
         }
         if (isset($response['error'])) {
             $data = ['error' => $response['error']];
         }
         return $data;
+    }
+
+    private function printRes($data)
+    {
+        echo "<pre>";
+        print_r($data);
+        echo "</pre>";
+        die();
     }
 
 }

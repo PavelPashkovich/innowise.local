@@ -1,6 +1,5 @@
 <?php
 
-require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../../system/DataBase.php';
 require_once __DIR__ . '/../../database/Migration.php';
 require_once __DIR__ . '/../../database/Seed.php';

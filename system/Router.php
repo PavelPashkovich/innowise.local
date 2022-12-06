@@ -2,32 +2,37 @@
 
 namespace system;
 
-use app\controllers\AppController;
-
 class Router
 {
     private array $routes;
     private string $url;
     private string $method;
-    private array $params;
     private mixed $controller;
     private string $action;
+    private ?int $id;
+    private array $params;
 
     public function __construct($routes)
     {
         $this->routes = $routes;
-        $this->url = $_SERVER['REQUEST_URI'];
+        $this->url = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         $this->method = $_SERVER['REQUEST_METHOD'];
+        $query = parse_url($_SERVER['REQUEST_URI'], PHP_URL_QUERY) ?? '';
+        $this->params = $this->getParams($query);
     }
 
-
+    /**
+     * @return void
+     */
     public function run(): void
     {
         if ($this->existUrl()) {
             $controller = new $this->controller;
             $action = $this->action;
-            if (!empty($this->params)) {
-                $controller->$action($this->params[0]);
+            if (!empty($this->id)) {
+                $controller->$action($this->id);
+            } elseif (!empty($this->params)) {
+                $controller->$action($this->params);
             } else {
                 if (!empty($_POST)) {
                     $controller->$action($_POST);
@@ -38,46 +43,40 @@ class Router
         } else {
             View::render('main/notFound');
         }
-
     }
 
-    private function existUrl()
+    /**
+     * @return bool
+     */
+    private function existUrl(): bool
     {
-        $url = trim($this->url, '/?');
+        $url = trim($this->url, '/');
 
         foreach($this->routes as $route){
             $route['url'] = rtrim($route['url'], "/");
             $regExp = "#^{$route['url']}$#";
 
-            if (preg_match($regExp, $url, $matches) && $route['method'] == $this->method){
+            if (preg_match($regExp, $url, $matches) && $route['method'] == $this->method) {
                 $this->controller = $route['controller'];
                 $this->action = $route['action'];
-                $this->params = array_slice($matches,1);
+                $this->id = array_slice($matches,1)[0] ?? null;
                 return true;
             }
         }
         return false;
     }
 
-
-
     /**
-     * @return void
+     * @param string $query
+     * @return array
      */
-//    public function run(): void
-//    {
-//        $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-//        $routes = self::$routes;
-//
-//        if (isset($routes[$uri]) && !empty($routes[$uri])) {
-//            $controllerAndAction = $routes[$uri];
-//            $controllerName = $controllerAndAction[0];
-//            $actionName = $controllerAndAction[1];
-//
-//            $controller = new $controllerName;
-//            $controller->$actionName();
-//        } else {
-//            View::render('main/notFound');
-//        }
-//    }
+    private function getParams(string $query = ''): array
+    {
+        $pattern = '#[?&]*(\w+)=(\w+)#';
+        preg_match_all($pattern, $query, $res);
+        $queryKeys = $res[1];
+        $queryValues = $res[2];
+        return array_combine($queryKeys, $queryValues);
+    }
+
 }

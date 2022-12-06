@@ -33,13 +33,13 @@ require_once __DIR__ . '/../header_nav.php';
                             <td><?php echo $user['status']; ?></td>
                             <td>
                                 <div class="container d-inline-flex justify-content-center">
-                                    <form role="form" class="form-container" action="users/<?php echo $user['id']; ?>" method="get">
+                                    <a href="/users/<?php echo $user['id']; ?>">
                                         <button class="btn btn-outline-primary m-1" type="submit"><i class="bi-eye"></i> Show</button>
-                                    </form>
-                                    <form role="form" class="form-container" action="users/edit/<?php echo $user['id']; ?>" method="get">
+                                    </a>
+                                    <a href="/users/edit/<?php echo $user['id']; ?>">
                                         <button class="btn btn-outline-warning m-1" type="submit"><i class="bi bi-pencil-square"></i> Edit</button>
-                                    </form>
-                                    <form role="form" class="form-container" onsubmit="delete_confirm(event)" action="users/<?php echo $user['id']; ?>"
+                                    </a>
+                                    <form role="form" class="form-container" onsubmit="delete_confirm(event)" action="/users/<?php echo $user['id']; ?>"
                                           method="post">
                                         <button class="btn btn-outline-danger m-1" type="submit"><i class="bi bi-trash"></i> Delete</button>
                                     </form>
@@ -48,10 +48,32 @@ require_once __DIR__ . '/../header_nav.php';
                         </tr>
                     <?php endforeach; ?>
                     </tbody>
-                    <?php else: ?>
-                        <h3 class="text-center">There are no users yet. You can add new user.</h3>
-                    <?php endif; ?>
-                    <?php endif; ?>
+                </table>
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-center">
+                        <?php if ($page > 1): ?>
+                            <li class="page-item"><a class="page-link" href="/users/?page=<?php echo $page - 1; ?>">Previous</a></li>
+                        <?php else: ?>
+                            <li class="page-item"><a class="page-link disabled" href="#">Previous</a></li>
+                        <?php endif; ?>
+
+                        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                        <?php if ($page == $i): ?>
+                            <li class="page-item"><a class="page-link active" href="/users/?page=<?php echo $i; ?>"><?php echo $i; ?></a></li>
+                        <?php endif; ?>
+                        <?php endfor; ?>
+
+                        <?php if ($page < $total_pages): ?>
+                            <li class="page-item"><a class="page-link" href="/users/?page=<?php echo $page + 1; ?>">Next</a></li>
+                        <?php else: ?>
+                            <li class="page-item"><a class="page-link disabled" href="#">Next</a></li>
+                        <?php endif; ?>
+                    </ul>
+                </nav>
+                <?php else: ?>
+                    <h3 class="text-center">There are no users yet. You can add new user.</h3>
+                <?php endif; ?>
+            <?php endif; ?>
             </div>
         </div>
     </div>

@@ -21,25 +21,37 @@ class DataBase
 
     public static function getConnection(): ?PDO
     {
+        $db = require_once __DIR__ . '/../config/database.php';
         if (!self::$connection) {
-            self::$connection = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASS);
+            self::$connection = new PDO("mysql:host=" . $db['host'] . ";dbname=" . $db['db_name'], $db['user_name'], $db['password']);
         }
         return self::$connection;
     }
 
     /**
      * @param Model $model
+     * @param $params
      * @return array
      */
-    public static function all(Model $model): array
+    public static function all(Model $model, $params): array
     {
         $response = [];
         try {
             $connection = self::getConnection();
             $tableName = $model->getTableName();
-            $sql = "SELECT * FROM " . $tableName;
-            $result = $connection->query($sql);
-            $response['success'] = $result->fetchAll(PDO::FETCH_ASSOC);
+            $limit_per_page = $params['limit_per_page'];
+            $query = "SELECT count(*) FROM $tableName";
+            $total_results = $connection->query($query)->fetchColumn();
+            $total_pages = ceil($total_results / $limit_per_page);
+            $response['total_pages'] = $total_pages;
+
+            $page = $params['page'] ?? 1;
+            $response['page'] = $page;
+
+            $offset = ($page - 1) * $limit_per_page;
+            $order = $params['order'] ?? 'id';
+            $sql = "SELECT * FROM " . $tableName . " ORDER BY " . $order . " LIMIT " . $limit_per_page . " OFFSET " . $offset;
+            $response['success'] = $connection->query($sql)->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException) {
             $messages = self::getMessages();
             $response['error'] = $messages['database error'];
