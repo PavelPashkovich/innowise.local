@@ -28,16 +28,16 @@ class UserController extends Controller
     }
 
     /**
-     * @param $validation_data
+     * @param $validationData
      * @return void
      */
-    public function store($validation_data): void
+    public function store($validationData): void
     {
-        $errors = (new UserStoreRequest())->validate($validation_data);
+        $errors = (new UserStoreRequest())->validate($validationData);
         if (!empty($errors)) {
             $this->render('users/create', ['errors' => $errors]);
         } else {
-            $response = (new User())->insert($validation_data);
+            $response = (new User())->insert($validationData);
             $data = $this->prepareUserResponse($response);
             array_key_exists('users', $data) ?
                 $this->redirect("/users/{$data['users']}") :
@@ -52,7 +52,6 @@ class UserController extends Controller
     public function show($id): void
     {
         $response = (new User())->find($id);
-//        $this->printRes($response);
         $data = $this->prepareUserResponse($response);
         $this->render('/users/show', $data);
     }
@@ -69,19 +68,23 @@ class UserController extends Controller
     }
 
     /**
-     * @param $validation_data
+     * @param $validationData
      * @return void
      */
-    public function update($validation_data): void
+    public function update($validationData): void
     {
-        $response = (new User())->find($validation_data['id']);
+        $response = (new User())->find($validationData['id']);
+        if (isset($response['error'])) {
+            $this->render("/users/edit", ['error' => $response['error']]);
+            return;
+        }
         $data = $this->prepareUserResponse($response);
-        $errors = (new UserStoreRequest())->validate($validation_data);
+        $errors = (new UserStoreRequest())->validate($validationData);
         if (!empty($errors)) {
             $data['errors'] = $errors;
             $this->render('users/edit', $data);
         } else {
-            $res = (new User)->update($validation_data);
+            $res = (new User)->update($validationData);
             $savedUserId = $res['success'] ?? null;
             $data = $this->prepareUserResponse($res);
             is_null($savedUserId) ?
@@ -96,12 +99,36 @@ class UserController extends Controller
      */
     public function destroy($id): void
     {
-        $response = (new User())->delete($id);
-        if (isset($response['success'])) {
+        $response = (new User())->find($id);
+        if (isset($response['error'])) {
+            $this->render("/users/index", ['error' => $response['error']]);
+        } else {
+            $response = (new User())->delete($id);
+            if (isset($response['success'])) {
+                $this->redirect("/users");
+            } elseif (isset($response['error'])) {
+                $error = $response['error'];
+                $this->render("/users/index", ['error' => $error]);
+            }
+        }
+    }
+
+    public function destroyMultiple() {
+        $ids = $_POST['ids'] ?? [];
+        $idErrors = [];
+        foreach ($ids as $id) {
+            $response = (new User())->find($id);
+            if (isset($response['error'])) {
+                $idErrors[] = $response['error'];
+            }
+        }
+        if (empty($idErrors)) {
+            foreach ($ids as $id) {
+                (new User())->delete($id);
+            }
             $this->redirect("/users");
-        } elseif (isset($response['error'])) {
-            $error = $response['error'];
-            $this->render("/users/index", ['error' => $error]);
+        } else {
+            $this->render("/users/index", ['idErrors' => $idErrors]);
         }
     }
 
@@ -121,14 +148,6 @@ class UserController extends Controller
             $data = ['error' => $response['error']];
         }
         return $data;
-    }
-
-    private function printRes($data)
-    {
-        echo "<pre>";
-        print_r($data);
-        echo "</pre>";
-        die();
     }
 
 }

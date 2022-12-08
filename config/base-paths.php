@@ -14,12 +14,6 @@ return [
         'action' => 'index'
     ],
     [
-        'url' => 'users/page/([0-9]+)',
-        'method' => 'GET',
-        'controller' => \app\controllers\UserController::class,
-        'action' => 'index'
-    ],
-    [
         'url' => 'users/create',
         'method' => 'GET',
         'controller' => \app\controllers\UserController::class,
@@ -54,6 +48,12 @@ return [
         'method' => 'POST',
         'controller' => \app\controllers\UserController::class,
         'action' => 'destroy'
+    ],
+    [
+        'url' => 'users/deleteMultiple',
+        'method' => 'POST',
+        'controller' => \app\controllers\UserController::class,
+        'action' => 'destroyMultiple'
     ],
 ];
 

@@ -66,16 +66,23 @@ class DataBase
      */
     public static function find(Model $model, $id): array
     {
+        $messages = self::getMessages();
         $response = [];
         try {
             $connection = self::getConnection();
             $tableName = $model->getTableName();
+            $itemExists = self::itemExists($connection, $tableName, 'id', $id);
+            if (!$itemExists) {
+                throw new \Exception(sprintf($messages['requested_id_#$id_was_not_found'], $id));
+            }
             $sql = "SELECT * FROM " . $tableName . " WHERE id = " . $id;
             $result = $connection->query($sql);
             $response['success'] = $result->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException) {
             $messages = self::getMessages();
-            $response['error'] = $messages['database error'];
+            $response['error'] = $messages['database_error'];
+        } catch (\Exception $exception) {
+            $response['error'] = $exception->getMessage();
         }
         return $response;
     }
@@ -110,10 +117,17 @@ class DataBase
      */
     public static function update(Model $model, $data): array
     {
+        $messages = self::getMessages();
         $response = [];
         try {
             $connection = self::getConnection();
             $tableName = $model->getTableName();
+            $id = $data['id'];
+
+            $itemExists = self::itemExists($connection, $tableName, 'id', $id);
+            if (!$itemExists) {
+                throw new \Exception(sprintf($messages['requested_id_#$id_was_not_found'], $id));
+            }
 
             $values = [];
             foreach ($data as $key => $value) {
@@ -124,12 +138,13 @@ class DataBase
             }
             $values = implode(', ', $values);
 
-            $sql = "UPDATE $tableName SET $values WHERE id = {$data['id']}";
+            $sql = "UPDATE $tableName SET $values WHERE id = $id";
             $connection->query($sql);
-            $response['success'] = $data['id'];
+            $response['success'] = $id;
         } catch (PDOException) {
-            $messages = self::getMessages();
             $response['error'] = $messages['database error'];
+        } catch (\Exception $exception) {
+            $response['error'] = $exception->getMessage();
         }
         return $response;
     }
@@ -141,17 +156,23 @@ class DataBase
      */
     public static function delete(Model $model, $id): array
     {
+        $messages = self::getMessages();
         $response = [];
         try {
             $connection = self::getConnection();
             $tableName = $model->getTableName();
+            $itemExists = self::itemExists($connection, $tableName, 'id', $id);
+            if (!$itemExists) {
+                throw new \Exception(sprintf($messages['requested_id_#$id_was_not_found'], $id));
+            }
             $sql = "DELETE FROM $tableName WHERE id = :id";
             $stmt = $connection->prepare($sql);
             $stmt->bindValue(":id", $id);
             $response['success'] = $stmt->execute();
         } catch (PDOException) {
-            $messages = self::getMessages();
             $response['error'] = $messages['database error'];
+        } catch (\Exception $exception) {
+            $response['error'] = $exception->getMessage();
         }
         return $response;
     }
@@ -173,4 +194,18 @@ class DataBase
         return $response;
     }
 
+    /**
+     * @param $connection
+     * @param $tableName
+     * @param $column
+     * @param $item
+     * @return mixed
+     */
+    protected static function itemExists($connection, $tableName, $column, $item): mixed
+    {
+        $query = "SELECT count(*) FROM " . $tableName . " WHERE $column = " . $item;
+        return $connection->query($query)->fetchColumn();
+    }
+
 }
+
