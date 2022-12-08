@@ -33,7 +33,7 @@ require_once __DIR__ . '/../header_nav.php';
                                 <td>
                                     <div class="container d-inline-flex justify-content-center">
                                         <a href="edit/<?php echo $users['id']; ?>">
-                                            <button class="btn btn-outline-warning m-1" type="submit"><i class="bi bi-pencil-square"></i> Edit</button>
+                                            <button class="btn btn-outline-warning m-1" type="button"><i class="bi bi-pencil-square"></i> Edit</button>
                                         </a>
                                         <form role="form" class="form-container" onsubmit="delete_confirm(event)" action="<?php echo $users['id']; ?>" method="post">
                                             <button class="btn btn-outline-danger m-1" type="submit"><i class="bi bi-trash"></i> Delete</button>
