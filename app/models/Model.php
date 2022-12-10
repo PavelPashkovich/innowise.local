@@ -9,6 +9,7 @@ abstract class Model
     protected static string $tableName;
     protected static array $columns;
     protected static int $limit_per_page = 10;
+    protected static array $availableSources = ['database', 'api'];
 
     public function getTableName(): string
     {

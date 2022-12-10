@@ -1,0 +1,69 @@
+{% extends 'base.twig' %}
+
+{% block title %}Editing user{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row justify-content-center vh-100 align-items-center">
+        <div class="col-xl-4 col-lg-6 col-md-8 col-sm-10">
+            {% if error is defined and error is not empty  %}
+                <h3 class="text-center">{{ error }}</h3>
+            {% else %}
+            {% if users is defined %}
+                    <form class="form-container" role="form" action="/users/update" method="post">
+                        <div class="mb-3">
+                            <label class="form-label" for="email-edit">Email</label>
+                            <input class="form-control" type="text" id="email-edit" name="email"
+                                   value="{{ users['email'] }}" aria-describedby="emailHelp">
+                            {% if errors['email_error'] is defined and errors['email_error'] %}
+                                <div id="emailHelp"
+                                     class="form-text text-danger">{{ errors['email_error'] }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" for="name-edit">Name</label>
+                            <input class="form-control" type="text" id="name-edit" name="name"
+                                   value="{{ users['name'] }}" aria-describedby="nameHelp">
+                            {% if errors['name_error'] is defined and errors['name_error'] %}
+                                <div id="nameHelp"
+                                     class="form-text text-danger">{{ errors['name_error'] }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" for="gender-edit">Gender</label>
+                            <select class="form-select" name="gender" id="gender-edit">
+                                <option value="male" {% if users['gender'] == 'male' %} selected="selected" {% endif %}>Male</option>
+                                <option value="female" {% if users['gender'] == 'female' %} selected="selected" {% endif %}>Female</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" for="status-edit">Status</label>
+                            <select class="form-select" name="status" id="status-edit">
+                                <option value="active" {% if users['status'] == 'active' %} selected="selected" {% endif %}>Active</option>
+                                <option value="inactive" {% if users['status'] == 'inactive' %} selected="selected" {% endif %}>Inactive</option>
+                            </select>
+                        </div>
+
+                        <input type="hidden" name="id" value="{{ users['id'] }}">
+
+                        <div class="d-grid">
+                            <button class="btn btn-outline-success" type="submit">Confirm</button>
+                        </div>
+
+                        {% if errors['database_error'] is defined and errors['database_error'] is not empty %}
+                            <div class="form-text text-danger">{{ errors['database_error'] }}</div>
+                        {% endif %}
+
+                    </form>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

@@ -55,6 +55,18 @@ return [
         'controller' => \app\controllers\UserController::class,
         'action' => 'destroyMultiple'
     ],
+    [
+        'url' => 'api',
+        'method' => 'GET',
+        'controller' => \app\controllers\AppController::class,
+        'action' => 'index'
+    ],
+    [
+        'url' => 'api/users',
+        'method' => 'GET',
+        'controller' => \app\controllers\UserController::class,
+        'action' => 'index'
+    ],
 ];
 
 //return [

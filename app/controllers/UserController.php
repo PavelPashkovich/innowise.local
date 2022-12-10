@@ -15,8 +15,7 @@ class UserController extends Controller
     {
         $response = (new User)->setLimitPerPage(10)->all($params);
         $data = $this->prepareUserResponse($response);
-
-        $this->render('/users/index', $data);
+        $this->render('/users/index.twig', $data);
     }
 
     /**
@@ -24,7 +23,7 @@ class UserController extends Controller
      */
     public function create(): void
     {
-        $this->render('/users/create');
+        $this->render('/users/create.twig');
     }
 
     /**
@@ -35,14 +34,17 @@ class UserController extends Controller
     {
         $errors = (new UserStoreRequest())->validate($validationData);
         if (!empty($errors)) {
-            $this->render('users/create', ['errors' => $errors]);
-        } else {
-            $response = (new User())->insert($validationData);
-            $data = $this->prepareUserResponse($response);
-            array_key_exists('users', $data) ?
-                $this->redirect("/users/{$data['users']}") :
-                $this->render('/users/create', ['error' => $data['error']]);
+            $this->render('users/create.twig', ['errors' => $errors]);
+            return;
         }
+        $response = (new User())->insert($validationData);
+        $data = $this->prepareUserResponse($response);
+        if (array_key_exists('users', $data)) {
+            $this->redirect("/users/{$data['users']}");
+        } else {
+            $this->render('/users/create.twig', ['error' => $data['error']]);
+        }
+
     }
 
     /**
@@ -53,7 +55,7 @@ class UserController extends Controller
     {
         $response = (new User())->find($id);
         $data = $this->prepareUserResponse($response);
-        $this->render('/users/show', $data);
+        $this->render('/users/show.twig', $data);
     }
 
     /**
@@ -64,7 +66,7 @@ class UserController extends Controller
     {
         $response = (new User())->find($id);
         $data = $this->prepareUserResponse($response);
-        $this->render('/users/edit', $data);
+        $this->render('/users/edit.twig', $data);
     }
 
     /**
@@ -75,21 +77,23 @@ class UserController extends Controller
     {
         $response = (new User())->find($validationData['id']);
         if (isset($response['error'])) {
-            $this->render("/users/edit", ['error' => $response['error']]);
+            $this->render("/users/edit.twig", ['error' => $response['error']]);
             return;
         }
         $data = $this->prepareUserResponse($response);
         $errors = (new UserStoreRequest())->validate($validationData);
         if (!empty($errors)) {
             $data['errors'] = $errors;
-            $this->render('users/edit', $data);
+            $this->render('users/edit.twig', $data);
+            return;
+        }
+        $res = (new User)->update($validationData);
+        $savedUserId = $res['success'] ?? null;
+        $data = $this->prepareUserResponse($res);
+        if (is_null($savedUserId)) {
+            $this->render('/users/edit.twig', $data);
         } else {
-            $res = (new User)->update($validationData);
-            $savedUserId = $res['success'] ?? null;
-            $data = $this->prepareUserResponse($res);
-            is_null($savedUserId) ?
-                $this->render('/users/edit', $data) :
-                $this->redirect("/users/$savedUserId");
+            $this->redirect("/users/$savedUserId");
         }
     }
 
@@ -101,16 +105,17 @@ class UserController extends Controller
     {
         $response = (new User())->find($id);
         if (isset($response['error'])) {
-            $this->render("/users/index", ['error' => $response['error']]);
-        } else {
-            $response = (new User())->delete($id);
-            if (isset($response['success'])) {
-                $this->redirect("/users");
-            } elseif (isset($response['error'])) {
-                $error = $response['error'];
-                $this->render("/users/index", ['error' => $error]);
-            }
+            $this->render("/users/index.twig", ['error' => $response['error']]);
+            return;
         }
+        $response = (new User())->delete($id);
+        if (isset($response['success'])) {
+            $this->redirect("/users");
+        } elseif (isset($response['error'])) {
+            $error = $response['error'];
+            $this->render("/users/index.twig", ['error' => $error]);
+        }
+
     }
 
     public function destroyMultiple() {
@@ -128,7 +133,7 @@ class UserController extends Controller
             }
             $this->redirect("/users");
         } else {
-            $this->render("/users/index", ['idErrors' => $idErrors]);
+            $this->render("/users/index.twig", ['idErrors' => $idErrors]);
         }
     }
 
