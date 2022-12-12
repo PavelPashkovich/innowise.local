@@ -3,18 +3,32 @@
 namespace app\controllers;
 
 use system\View;
+use Twig\Environment;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
+use Twig\Loader\FilesystemLoader;
 
 class Controller
 {
-    /**
-     * @param $path
-     * @param array $data
-     * @return void
-     */
-    protected function render($path, array $data = []): void
+
+    public Environment $view;
+
+    public function __construct()
     {
-        View::render($path, $data);
+        $loader = new FilesystemLoader(__DIR__ . '/../views');
+        $this->view = new Environment($loader);
     }
+
+    protected function render($view, array $data = []): void
+    {
+        try {
+            echo $this->view->render($view, $data);
+        } catch (LoaderError|RuntimeError|SyntaxError $e) {
+            View::render('main/notFound', ['error' => $e->getMessage()]);
+        }
+    }
+
 
     /**
      * @param $url

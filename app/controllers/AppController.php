@@ -2,10 +2,26 @@
 
 namespace app\controllers;
 
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
+
 class AppController extends Controller
 {
-    public function index(): void
+
+    /**
+     * @throws RuntimeError
+     * @throws SyntaxError
+     * @throws LoaderError
+     */
+    public function index()
     {
-        $this->render('/main/index');
+        echo $this->view->render('main/index.twig');
     }
+
+
+//    public function index(): void
+//    {
+//        $this->render('/main/index');
+//    }
 }

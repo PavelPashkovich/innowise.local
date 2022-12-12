@@ -22,7 +22,7 @@ class View
         if (file_exists($fullPath) && is_file($fullPath)) {
             include($fullPath);
         } else {
-            View::render('notFound');
+            View::render('main/notFound');
         }
     }
 }

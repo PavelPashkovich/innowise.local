@@ -1,0 +1,98 @@
+{% extends 'base.twig' %}
+
+{% block title %}Users{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row justify-content-center vh-100 align-items-center">
+        <div class="col-xl-9 col-lg-10 col-md-11 col-sm-12">
+            {% if error is defined and error is not empty  %}
+                <h3 class="text-center">{{ error }}</h3>
+            {% elseif idErrors is defined and idErrors is not empty %}
+            {% for idError in idErrors %}
+                    <h3 class="text-center">{{ idError }}</h3>
+            {% endfor %}
+            {% else %}
+            {% if users is defined and users|length > 0 %}
+            <div class="table-responsive">
+                <form id="checkbox-form" role="form"  class="form-container" action="/users/deleteMultiple" method="post">
+                    <button id="delete_selected" disabled class="btn btn-sm btn-outline-secondary m-1" type="submit"><i class="bi bi-trash"></i> Delete selected</button>
+                </form>
+                    <table class="table table-hover">
+                        <thead class="text-center bg-light">
+                        <tr>
+                            <th><input type="checkbox" id="select-all" class="form-check-input" title="Select all"></th>
+                            <th>ID</th>
+                            <th class="text-start">Name</th>
+                            <th class="text-start">Email</th>
+                            <th>Gender</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody class="text-center align-middle">
+                        {% for user in users %}
+                            <tr>
+                                <td>
+                                    <input form="checkbox-form" type="checkbox" class="chkbox form-check-input" name="ids[]"
+                                           value="{{ user['id'] }}"
+                                           title="Select {{ user['name'] }}">
+                                </td>
+                                <td>{{ user['id'] }}</td>
+                                <td class="text-start">{{ user['name'] }}</td>
+                                <td class="text-start">{{ user['email'] }}</td>
+                                <td>{{ user['gender'] }}</td>
+                                <td>{{ user['status'] }}</td>
+                                <td>
+                                    <div class="container d-inline-flex justify-content-center">
+                                        <a href="/users/{{ user['id'] }}">
+                                            <button class="btn btn-outline-primary m-1" type="button"><i class="bi-eye"></i> Show</button>
+                                        </a>
+                                        <a href="/users/edit/{{ user['id'] }}">
+                                            <button class="btn btn-outline-warning m-1" type="button"><i class="bi bi-pencil-square"></i> Edit</button>
+                                        </a>
+                                        <form role="form" class="form-container" onsubmit="delete_confirm(event)" action="/users/{{ user['id'] }}"
+                                              method="post">
+                                            <button id="delete_one" class="btn btn-outline-danger m-1" type="submit"><i class="bi bi-trash"></i> Delete</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-center">
+                        {% if page is defined and page > 1 %}
+                            <li class="page-item"><a class="page-link" href="/users/?page={{ page - 1 }}">Previous</a></li>
+                        {% else %}
+                            <li class="page-item"><a class="page-link disabled" href="#">Previous</a></li>
+                        {% endif %}
+
+                        {% for i in range(1, total_pages) %}
+                        {% if page == i %}
+                            <li class="page-item"><a class="page-link active" href="/users/?page={{ page }}">{{ page }}</a></li>
+                        {% endif %}
+                        {% endfor %}
+
+                        {% if page < total_pages %}
+                            <li class="page-item"><a class="page-link" href="/users/?page={{ page + 1 }}">Next</a></li>
+                        {% else %}
+                            <li class="page-item"><a class="page-link disabled" href="#">Next</a></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% else %}
+                    <h3 class="text-center">There are no users yet. You can add new user.</h3>
+
+                {% endif %}
+            {% endif %}
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

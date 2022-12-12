@@ -54,7 +54,7 @@ class DataBase
             $response['success'] = $connection->query($sql)->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException) {
             $messages = self::getMessages();
-            $response['error'] = $messages['database error'];
+            $response['error'] = $messages['database_error'];
         }
         return $response;
     }
@@ -105,7 +105,7 @@ class DataBase
             $response['success'] = $connection->lastInsertId();
         } catch (PDOException) {
             $messages = self::getMessages();
-            $response['error'] = $messages['database error'];
+            $response['error'] = $messages['database_error'];
         }
         return $response;
     }
@@ -142,7 +142,7 @@ class DataBase
             $connection->query($sql);
             $response['success'] = $id;
         } catch (PDOException) {
-            $response['error'] = $messages['database error'];
+            $response['error'] = $messages['database_error'];
         } catch (\Exception $exception) {
             $response['error'] = $exception->getMessage();
         }
@@ -170,7 +170,7 @@ class DataBase
             $stmt->bindValue(":id", $id);
             $response['success'] = $stmt->execute();
         } catch (PDOException) {
-            $response['error'] = $messages['database error'];
+            $response['error'] = $messages['database_error'];
         } catch (\Exception $exception) {
             $response['error'] = $exception->getMessage();
         }
