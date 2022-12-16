@@ -8,6 +8,15 @@
             </button>
             <div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
                 <div class="navbar-nav">
+                    <div class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Data source
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/data-source?data_source=database">Database</a></li>
+                            <li><a class="dropdown-item" href="/data-source?data_source=gorest_rest_api">Gorest REST API</a></li>
+                        </ul>
+                    </div>
                     <a class="nav-link" href="/users/create">Add new user</a>
                     <a class="nav-link" href="/users">Show all users</a>
                 </div>

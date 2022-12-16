@@ -2,11 +2,10 @@
 
 namespace system;
 
-use app\models\Model;
 use PDO;
 use PDOException;
 
-class DataBase
+class DataBase implements DataSourceActions
 {
     protected static ?PDO $connection = null;
     protected static array $messages = [];
@@ -29,28 +28,27 @@ class DataBase
     }
 
     /**
-     * @param Model $model
-     * @param $params
+     * @param $data
      * @return array
      */
-    public static function all(Model $model, $params): array
+    public static function all($data): array
     {
         $response = [];
         try {
             $connection = self::getConnection();
-            $tableName = $model->getTableName();
-            $limit_per_page = $params['limit_per_page'];
+            $tableName = $data['table_name'];
+            $perPage = $data['per_page'];
             $query = "SELECT count(*) FROM $tableName";
-            $total_results = $connection->query($query)->fetchColumn();
-            $total_pages = ceil($total_results / $limit_per_page);
-            $response['total_pages'] = $total_pages;
+            $totalResults = $connection->query($query)->fetchColumn();
+            $totalPages = ceil($totalResults / $perPage);
+            $response['total_pages'] = $totalPages;
 
-            $page = $params['page'] ?? 1;
+            $page = $data['page'] ?? 1;
             $response['page'] = $page;
 
-            $offset = ($page - 1) * $limit_per_page;
+            $offset = ($page - 1) * $perPage;
             $order = $params['order'] ?? 'id';
-            $sql = "SELECT * FROM " . $tableName . " ORDER BY " . $order . " LIMIT " . $limit_per_page . " OFFSET " . $offset;
+            $sql = "SELECT * FROM " . $tableName . " ORDER BY " . $order . " LIMIT " . $perPage . " OFFSET " . $offset;
             $response['success'] = $connection->query($sql)->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException) {
             $messages = self::getMessages();
@@ -60,17 +58,17 @@ class DataBase
     }
 
     /**
-     * @param Model $model
-     * @param $id
+     * @param $data
      * @return array
      */
-    public static function find(Model $model, $id): array
+    public static function find($data): array
     {
         $messages = self::getMessages();
         $response = [];
         try {
             $connection = self::getConnection();
-            $tableName = $model->getTableName();
+            $tableName = $data['table_name'];
+            $id = $data['id'];
             $itemExists = self::itemExists($connection, $tableName, 'id', $id);
             if (!$itemExists) {
                 throw new \Exception(sprintf($messages['requested_id_#$id_was_not_found'], $id));
@@ -88,21 +86,23 @@ class DataBase
     }
 
     /**
-     * @param Model $model
      * @param $data
      * @return array
      */
-    public static function insert(Model $model, $data): array
+    public static function insert($data): array
     {
         $response = [];
         try {
             $connection = self::getConnection();
-            $tableName = $model->getTableName();
+            $tableName = $data['table_name'];
+            unset($data['table_name']);
             $columns = implode(', ', array_keys($data));
             $values = "'" . implode("' , '", array_values($data)) . "'";
             $sql = "INSERT INTO $tableName ($columns) VALUES ($values)";
             $connection->query($sql);
-            $response['success'] = $connection->lastInsertId();
+            $data['id'] = $connection->lastInsertId();
+            $data['table_name'] = $tableName;
+            $response = self::find($data);
         } catch (PDOException) {
             $messages = self::getMessages();
             $response['error'] = $messages['database_error'];
@@ -111,17 +111,17 @@ class DataBase
     }
 
     /**
-     * @param Model $model
      * @param $data
      * @return array
      */
-    public static function update(Model $model, $data): array
+    public static function update($data): array
     {
         $messages = self::getMessages();
         $response = [];
         try {
             $connection = self::getConnection();
-            $tableName = $model->getTableName();
+            $tableName = $data['table_name'];
+            unset($data['table_name']);
             $id = $data['id'];
 
             $itemExists = self::itemExists($connection, $tableName, 'id', $id);
@@ -140,7 +140,8 @@ class DataBase
 
             $sql = "UPDATE $tableName SET $values WHERE id = $id";
             $connection->query($sql);
-            $response['success'] = $id;
+            $data['table_name'] = $tableName;
+            $response = self::find($data);
         } catch (PDOException) {
             $response['error'] = $messages['database_error'];
         } catch (\Exception $exception) {
@@ -150,17 +151,17 @@ class DataBase
     }
 
     /**
-     * @param Model $model
-     * @param $id
+     * @param $data
      * @return array
      */
-    public static function delete(Model $model, $id): array
+    public static function delete($data): array
     {
         $messages = self::getMessages();
         $response = [];
         try {
             $connection = self::getConnection();
-            $tableName = $model->getTableName();
+            $tableName = $data['table_name'];
+            $id = $data['id'];
             $itemExists = self::itemExists($connection, $tableName, 'id', $id);
             if (!$itemExists) {
                 throw new \Exception(sprintf($messages['requested_id_#$id_was_not_found'], $id));
@@ -168,7 +169,7 @@ class DataBase
             $sql = "DELETE FROM $tableName WHERE id = :id";
             $stmt = $connection->prepare($sql);
             $stmt->bindValue(":id", $id);
-            $response['success'] = $stmt->execute();
+            $response['success'] = $stmt->execute(); // bool 'true'
         } catch (PDOException) {
             $response['error'] = $messages['database_error'];
         } catch (\Exception $exception) {

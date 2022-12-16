@@ -4,16 +4,20 @@ namespace app\controllers;
 
 use app\models\User;
 use app\requests\UserStoreRequest;
+use system\Request;
 
 class UserController extends Controller
 {
     /**
-     * @param array $params
+     * @param Request $request
      * @return void
      */
-    public function index(array $params = []): void
+    public function index(Request $request): void
     {
-        $response = (new User)->setLimitPerPage(10)->all($params);
+        $params = $request->getParams();
+        $dataSource = $request->getDataSource();
+        $response = (new User)->all($params, $dataSource);
+
         $data = $this->prepareUserResponse($response);
         $this->render('/users/index.twig', $data);
     }
@@ -27,20 +31,24 @@ class UserController extends Controller
     }
 
     /**
-     * @param $validationData
+     * @param Request $request
      * @return void
      */
-    public function store($validationData): void
+    public function store(Request $request): void
     {
-        $errors = (new UserStoreRequest())->validate($validationData);
+        $postData = $request->getPostData();
+        $dataSource = $request->getDataSource();
+        $postData['dataSource'] = $request->getDataSource();
+        $errors = (new UserStoreRequest())->validate($postData);
         if (!empty($errors)) {
             $this->render('users/create.twig', ['errors' => $errors]);
             return;
         }
-        $response = (new User())->insert($validationData);
+        unset($postData['dataSource']);
+        $response = (new User())->insert($postData, $dataSource);
         $data = $this->prepareUserResponse($response);
-        if (array_key_exists('users', $data)) {
-            $this->redirect("/users/{$data['users']}");
+        if (!empty($data['users'])) {
+            $this->redirect("/users/{$data['users']['id']}");
         } else {
             $this->render('/users/create.twig', ['error' => $data['error']]);
         }
@@ -48,47 +56,56 @@ class UserController extends Controller
     }
 
     /**
-     * @param $id
+     * @param Request $request
      * @return void
      */
-    public function show($id): void
+    public function show(Request $request): void
     {
-        $response = (new User())->find($id);
+        $id = $request->getId();
+        $dataSource = $request->getDataSource();
+        $response = (new User())->find($id, $dataSource);
         $data = $this->prepareUserResponse($response);
         $this->render('/users/show.twig', $data);
     }
 
     /**
-     * @param $id
+     * @param Request $request
      * @return void
      */
-    public function edit($id): void
+    public function edit(Request $request): void
     {
-        $response = (new User())->find($id);
+        $id = $request->getId();
+        $dataSource = $request->getDataSource();
+        $response = (new User())->find($id, $dataSource);
         $data = $this->prepareUserResponse($response);
         $this->render('/users/edit.twig', $data);
     }
 
     /**
-     * @param $validationData
+     * @param Request $request
      * @return void
      */
-    public function update($validationData): void
+    public function update(Request $request): void
     {
-        $response = (new User())->find($validationData['id']);
-        if (isset($response['error'])) {
+        $postData = $request->getPostData();
+        $dataSource = $request->getDataSource();
+        $response = (new User())->find($postData['id'], $dataSource);
+        if (!empty($response['error'])) {
             $this->render("/users/edit.twig", ['error' => $response['error']]);
             return;
         }
         $data = $this->prepareUserResponse($response);
-        $errors = (new UserStoreRequest())->validate($validationData);
+
+        $postData['dataSource'] = $dataSource;
+        $errors = (new UserStoreRequest())->validate($postData);
         if (!empty($errors)) {
             $data['errors'] = $errors;
             $this->render('users/edit.twig', $data);
             return;
         }
-        $res = (new User)->update($validationData);
-        $savedUserId = $res['success'] ?? null;
+        unset($postData['dataSource']);
+        $res = (new User)->update($postData, $dataSource);
+        $savedUserId = $res['success']['id'] ?? null;
         $data = $this->prepareUserResponse($res);
         if (is_null($savedUserId)) {
             $this->render('/users/edit.twig', $data);
@@ -98,18 +115,20 @@ class UserController extends Controller
     }
 
     /**
-     * @param $id
+     * @param Request $request
      * @return void
      */
-    public function destroy($id): void
+    public function destroy(Request $request): void
     {
-        $response = (new User())->find($id);
-        if (isset($response['error'])) {
+        $id = $request->getId();
+        $dataSource = $request->getDataSource();
+        $response = (new User())->find($id, $dataSource);
+        if (!empty($response['error'])) {
             $this->render("/users/index.twig", ['error' => $response['error']]);
             return;
         }
-        $response = (new User())->delete($id);
-        if (isset($response['success'])) {
+        $response = (new User())->delete($id, $dataSource);
+        if (isset($response['success']) || $response['success'] === null) {
             $this->redirect("/users");
         } elseif (isset($response['error'])) {
             $error = $response['error'];
@@ -118,18 +137,20 @@ class UserController extends Controller
 
     }
 
-    public function destroyMultiple() {
-        $ids = $_POST['ids'] ?? [];
+    public function destroyMultiple(Request $request) {
+        $dataSource = $request->getDataSource();
+        $postData = $request->getPostData();
+        $ids = $postData['ids'];
         $idErrors = [];
         foreach ($ids as $id) {
-            $response = (new User())->find($id);
-            if (isset($response['error'])) {
+            $response = (new User())->find($id, $dataSource);
+            if (!empty($response['error'])) {
                 $idErrors[] = $response['error'];
             }
         }
         if (empty($idErrors)) {
             foreach ($ids as $id) {
-                (new User())->delete($id);
+                (new User())->delete($id, $dataSource);
             }
             $this->redirect("/users");
         } else {
@@ -144,12 +165,12 @@ class UserController extends Controller
     private function prepareUserResponse($response): array
     {
         $data = [];
-        if (isset($response['success'])) {
+        if (!empty($response['success'])) {
             $data = ['users' => $response['success']];
             $data['total_pages'] = $response['total_pages'] ?? '';
             $data['page'] = $response['page'] ?? '';
         }
-        if (isset($response['error'])) {
+        if (!empty($response['error'])) {
             $data = ['error' => $response['error']];
         }
         return $data;
