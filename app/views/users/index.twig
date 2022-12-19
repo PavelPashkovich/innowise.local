@@ -4,14 +4,14 @@
 
 {% block content %}
 
-<div class="container">
+<div class="container-fluid">
     <div class="row justify-content-center vh-100 align-items-center">
         <div class="col-xl-9 col-lg-10 col-md-11 col-sm-12">
             {% if error is defined and error is not empty  %}
                 <h3 class="text-center">{{ error }}</h3>
             {% elseif idErrors is defined and idErrors is not empty %}
             {% for idError in idErrors %}
-                    <h3 class="text-center">{{ idError }}</h3>
+                <h3 class="text-center">{{ idError }}</h3>
             {% endfor %}
             {% else %}
             {% if users is defined and users|length > 0 %}
@@ -62,7 +62,7 @@
                         {% endfor %}
                         </tbody>
                     </table>
-
+                {% if total_pages is not empty and total_pages > 1 %}
                 <nav aria-label="Page navigation example">
                     <ul class="pagination justify-content-center">
                         {% if page is defined and page > 1 %}
@@ -84,9 +84,9 @@
                         {% endif %}
                     </ul>
                 </nav>
+                {% endif %}
                 {% else %}
                     <h3 class="text-center">There are no users yet. You can add new user.</h3>
-
                 {% endif %}
             {% endif %}
             </div>

@@ -20,12 +20,12 @@ class Controller
         $this->view = new Environment($loader);
     }
 
-    protected function render($view, array $data = []): void
+    public function render($view, array $data = []): void
     {
         try {
             echo $this->view->render($view, $data);
         } catch (LoaderError|RuntimeError|SyntaxError $e) {
-            View::render('main/notFound', ['error' => $e->getMessage()]);
+            echo $this->view->render('main/error.twig', ['error' => $e->getMessage()]);
         }
     }
 

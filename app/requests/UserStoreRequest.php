@@ -27,11 +27,15 @@ class UserStoreRequest implements Validation
 
         // Validate email existence
         if (isset($data['id'])) {
-            $response = (new User())->find($data['id']);
+            $response = (new User())->find($data['id'], $data['dataSource']);
             $user = $response['success'];
             if ($user['email'] == $email) {
                 return $errors;
             }
+        }
+
+        if ($data['dataSource'] !== 'database') {
+            return $errors;
         }
 
         $user = new User();

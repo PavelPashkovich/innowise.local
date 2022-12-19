@@ -2,6 +2,10 @@
 
 namespace system;
 
+//session_start();
+
+use app\controllers\Controller;
+
 class Router
 {
     private array $routes;
@@ -9,16 +13,16 @@ class Router
     private string $method;
     private mixed $controller;
     private string $action;
-    private ?int $id;
-    private array $params;
+    private Request $request;
 
     public function __construct($routes)
     {
         $this->routes = $routes;
         $this->url = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         $this->method = $_SERVER['REQUEST_METHOD'];
-        $query = parse_url($_SERVER['REQUEST_URI'], PHP_URL_QUERY) ?? '';
-        $this->params = $this->getParams($query);
+        $this->request = new Request();
+        $this->setRouterProperties();
+        $this->setRequestProperties();
     }
 
     /**
@@ -26,29 +30,18 @@ class Router
      */
     public function run(): void
     {
-        if ($this->existUrl()) {
-            $controller = new $this->controller;
+        if ($this->controller) {
+            $controller = $this->controller;
             $action = $this->action;
-            if (!empty($this->id)) {
-                $controller->$action($this->id);
-            } elseif (!empty($this->params)) {
-                $controller->$action($this->params);
-            } else {
-                if (!empty($_POST)) {
-                    $controller->$action($_POST);
-                } else {
-                    $controller->$action();
-                }
-            }
+            $request = $this->request;
+            $controller->$action($request);
         } else {
-            View::render('main/notFound');
+            $controller = new Controller();
+            $controller->render('main/error.twig');
         }
     }
 
-    /**
-     * @return bool
-     */
-    private function existUrl(): bool
+    private function setRouterProperties(): void
     {
         $url = trim($this->url, '/');
 
@@ -57,13 +50,28 @@ class Router
             $regExp = "#^{$route['url']}$#";
 
             if (preg_match($regExp, $url, $matches) && $route['method'] == $this->method) {
-                $this->controller = $route['controller'];
+                $this->controller = new $route['controller'];
                 $this->action = $route['action'];
-                $this->id = array_slice($matches,1)[0] ?? null;
-                return true;
+                $id = array_slice($matches,1)[0] ?? null;
+                $this->request->setId($id);
             }
         }
-        return false;
+    }
+
+    private function setRequestProperties(): void
+    {
+        $query = parse_url($_SERVER['REQUEST_URI'], PHP_URL_QUERY) ?? '';
+        $params = $this->getParams($query);
+        $this->request->setParams($params);
+        $postData = $_POST ?? [];
+        $this->request->setPostData($postData);
+        $dataSources = require_once __DIR__ . '/../config/base-config.php';
+        if ($_COOKIE['data_source'] && in_array($_COOKIE['data_source'], $dataSources)) {
+            $dataSource = $_COOKIE['data_source'];
+            $this->request->setDataSource($dataSource);
+        } else {
+            $this->request->setDataSource(DEFAULT_DATA_SOURCE);
+        }
     }
 
     /**

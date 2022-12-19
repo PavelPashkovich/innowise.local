@@ -56,17 +56,17 @@ return [
         'action' => 'destroyMultiple'
     ],
     [
-        'url' => 'api',
+        'url' => 'data-source',
         'method' => 'GET',
-        'controller' => \app\controllers\AppController::class,
-        'action' => 'index'
+        'controller' => \app\controllers\DataSourceController::class,
+        'action' => 'setDataSource'
     ],
-    [
-        'url' => 'api/users',
-        'method' => 'GET',
-        'controller' => \app\controllers\UserController::class,
-        'action' => 'index'
-    ],
+//    [
+//        'url' => 'gorest-rest-api',
+//        'method' => 'GET',
+//        'controller' => \app\controllers\DataSourceController::class,
+//        'action' => 'setDataSourceSource'
+//    ],
 ];
 
 //return [
