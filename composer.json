@@ -1,7 +1,16 @@
 {
-    "require": {
-        "twig/twig": "^3.4",
-      "ext-pdo": "*",
-      "ext-curl": "*"
+  "require": {
+    "twig/twig": "^3.4",
+    "ext-pdo": "*",
+    "ext-curl": "*",
+    "zircote/swagger-php": "^4.5",
+    "doctrine/annotations": "^1.7"
+  },
+  "autoload": {
+    "psr-4": {
+      "app\\": "app/",
+      "system\\": "system/",
+      "database\\": "database/"
     }
+  }
 }

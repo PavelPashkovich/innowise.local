@@ -61,12 +61,18 @@ return [
         'controller' => \app\controllers\DataSourceController::class,
         'action' => 'setDataSource'
     ],
-//    [
-//        'url' => 'gorest-rest-api',
-//        'method' => 'GET',
-//        'controller' => \app\controllers\DataSourceController::class,
-//        'action' => 'setDataSourceSource'
-//    ],
+    [
+        'url' => 'api/gorest',
+        'method' => 'GET',
+        'controller' => \app\controllers\GorestApiController::class,
+        'action' => 'index'
+    ],
+    [
+        'url' => 'api/gorest/docs',
+        'method' => 'GET',
+        'controller' => \app\controllers\GorestApiController::class,
+        'action' => 'showSwagger'
+    ],
 ];
 
 //return [

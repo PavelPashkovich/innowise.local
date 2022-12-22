@@ -6,9 +6,37 @@ use app\models\User;
 use app\requests\UserStoreRequest;
 use system\Request;
 
+use OpenApi\Annotations as OA;
+
+/**
+ * @OA\Info(title="REST API Docs", version="1.0")
+ * @OA\Scheme(format="http")
+ * @OA\Components(
+ *     @OA\SecurityScheme(
+ *         securityScheme="bearerAuth",
+ *         in="header",
+ *         name="bearerAuth",
+ *         type="http",
+ *         scheme="bearer",
+ *         bearerFormat="JWT",
+ *     )
+ * )
+ */
+
 class UserController extends Controller
 {
+
     /**
+     * @OA\Get(
+     *     path="/users",
+     *     summary="Get all list of users",
+     *     tags={"Users"},
+     *     @OA\Response(response="200", description="Success"),
+     *     security={
+     *         {"bearerAuth": {}}
+     *     }
+     * )
+     *
      * @param Request $request
      * @return void
      */
@@ -31,6 +59,31 @@ class UserController extends Controller
     }
 
     /**
+     * @OA\Post(
+     *     path="/users",
+     *     tags={"Users"},
+     *     summary="Add a new user",
+     *     description="Returns a single user",
+     *     operationId="store",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 required={"name", "email", "gender", "status"},
+     *                 @OA\Property(property="name", type="string"),
+     *                 @OA\Property(property="email", type="string"),
+     *                 @OA\Property(property="gender", type="string", enum={"male", "female"}, default="male"),
+     *                 @OA\Property(property="status", type="string", enum={"active", "inactive"}, default="active")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response="200", description="Success"),
+     *     security={
+     *         {"bearerAuth": {}}
+     *     }
+     * )
+     *
      * @param Request $request
      * @return void
      */
@@ -56,6 +109,28 @@ class UserController extends Controller
     }
 
     /**
+     * @OA\Get(
+     *     path="/users/{userId}",
+     *     tags={"Users"},
+     *     summary="Find user by ID",
+     *     description="Returns a single user",
+     *     operationId="show",
+     *     @OA\Parameter(
+     *         name="userId",
+     *         in="path",
+     *         description="ID of user to return",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         )
+     *     ),
+     *     @OA\Response(response="200", description="Success"),
+     *     security={
+     *         {"bearerAuth": {}}
+     *     }
+     * )
+     *
      * @param Request $request
      * @return void
      */
@@ -82,6 +157,32 @@ class UserController extends Controller
     }
 
     /**
+     * @OA\Post(
+     *     path="/users/update",
+     *     tags={"Users"},
+     *     summary="Update user",
+     *     description="Updates a single user",
+     *     operationId="update",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 required={"id", "name", "email", "gender", "status"},
+     *                 @OA\Property(property="id", type="string"),
+     *                 @OA\Property(property="name", type="string"),
+     *                 @OA\Property(property="email", type="string"),
+     *                 @OA\Property(property="gender", type="string", enum={"male", "female"}, default="male"),
+     *                 @OA\Property(property="status", type="string", enum={"active", "inactive"}, default="active")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response="200", description="Success"),
+     *     security={
+     *         {"bearerAuth": {}}
+     *     }
+     * )
+     *
      * @param Request $request
      * @return void
      */
@@ -115,6 +216,27 @@ class UserController extends Controller
     }
 
     /**
+     * @OA\Post(
+     *     path="/users/{userId}",
+     *     tags={"Users"},
+     *     summary="Delete user",
+     *     operationId="delete",
+     *     @OA\Parameter(
+     *         name="userId",
+     *         in="path",
+     *         description="User id to delete",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer",
+     *             format="int64"
+     *         ),
+     *     ),
+     *     @OA\Response(response="200", description="Success"),
+     *     security={
+     *         {"bearerAuth": {}}
+     *     }
+     * )
+     *
      * @param Request $request
      * @return void
      */

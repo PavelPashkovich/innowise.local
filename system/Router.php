@@ -30,7 +30,8 @@ class Router
      */
     public function run(): void
     {
-        if ($this->controller) {
+
+        if (isset($this->controller)) {
             $controller = $this->controller;
             $action = $this->action;
             $request = $this->request;
@@ -66,7 +67,8 @@ class Router
         $postData = $_POST ?? [];
         $this->request->setPostData($postData);
         $dataSources = require_once __DIR__ . '/../config/base-config.php';
-        if ($_COOKIE['data_source'] && in_array($_COOKIE['data_source'], $dataSources)) {
+
+        if (isset($_COOKIE['data_source']) && in_array($_COOKIE['data_source'], $dataSources)) {
             $dataSource = $_COOKIE['data_source'];
             $this->request->setDataSource($dataSource);
         } else {
