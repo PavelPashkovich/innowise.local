@@ -1,11 +1,20 @@
 // Delete confirmation
-function delete_confirm(e) {
+// function delete_confirm(e) {
+//     if(confirm('Delete?')){
+//         return true;
+//     }else{
+//         e.preventDefault();
+//     }
+// }
+
+// Delete confirmation
+$('#delete_one').click(function (e) {
     if(confirm('Delete?')){
         return true;
     }else{
         e.preventDefault();
     }
-}
+});
 
 // Checkbox select all on users page
 $('#select-all').click(function () {

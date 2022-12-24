@@ -34,7 +34,7 @@
                                         <a href="edit/{{ users['id'] }}">
                                             <button class="btn btn-outline-warning m-1" type="button"><i class="bi bi-pencil-square"></i> Edit</button>
                                         </a>
-                                        <form role="form" class="form-container" onsubmit="delete_confirm(event)" action="{{ users['id'] }}" method="post">
+                                        <form role="form" class="form-container" {# onsubmit="delete_confirm(event)" #} action="{{ users['id'] }}" method="post">
                                             <button class="btn btn-outline-danger m-1" type="submit"><i class="bi bi-trash"></i> Delete</button>
                                         </form>
                                     </div>
