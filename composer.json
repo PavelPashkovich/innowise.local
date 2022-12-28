@@ -12,5 +12,8 @@
       "system\\": "system/",
       "database\\": "database/"
     }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.5"
   }
 }

@@ -106,7 +106,10 @@ class GorestRestApi implements DataSourceActions
         $bodyStr = substr($result , $headerSize);
         $bodyStr = json_decode($bodyStr,true, 3);
         if (isset($bodyStr['message'])) {
-            $error = $bodyStr['message'];
+            $error = ucfirst($bodyStr['message']);
+        }
+        if (isset($bodyStr[0]['message']) && isset($bodyStr[0]['field'])) {
+            $error = 'This ' . $bodyStr[0]['field'] . ' ' . $bodyStr[0]['message'] . '!';
         }
         return ['success' => $bodyStr, 'error' => $error];
     }

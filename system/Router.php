@@ -2,8 +2,6 @@
 
 namespace system;
 
-//session_start();
-
 use app\controllers\Controller;
 
 class Router
@@ -30,7 +28,6 @@ class Router
      */
     public function run(): void
     {
-
         if (isset($this->controller)) {
             $controller = $this->controller;
             $action = $this->action;
