@@ -3,7 +3,7 @@ window.onload = function() {
 
   // the following lines will be replaced by docker/configurator, when it runs in a docker-container
   window.ui = SwaggerUIBundle({
-    url: "http://innowise.local/api/gorest/docs",
+    url: "http://innowise.local:8876/api/gorest/docs",
     dom_id: '#swagger-ui',
     validatorUrl: null,
     deepLinking: true,
